@@ -1,7 +1,13 @@
 import React, { useState } from 'react'
 import { createGlobalStyle } from 'styled-components'
-import { useRecoilState } from 'recoil'
-import { AtomMinute } from './recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import {
+  AtomHour,
+  AtomMinute,
+  Hour2MinuteChange,
+  Minute2HourChange
+} from './recoil'
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, 
 p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, 
@@ -24,21 +30,54 @@ table { border-collapse: collapse; border-spacing: 0; }
 `
 
 function App () {
-  const [hour, setHour] = useState(0)
   const [minute, setMinute] = useRecoilState(AtomMinute)
-  function onChange (evt: React.FormEvent<HTMLInputElement>) {
+  const [hour, setHour] = useRecoilState(AtomHour)
+  const minute2hour = useRecoilValue(Minute2HourChange)
+  const hour2minute = useRecoilValue(Hour2MinuteChange)
+  function onMinuteChange (evt: React.FormEvent<HTMLInputElement>) {
     setMinute(+evt.currentTarget.value)
-    setHour(11)
+    setHour(+evt.currentTarget.value / 60)
   }
+  function onHourChange (evt: React.FormEvent<HTMLInputElement>) {
+    setHour(+evt.currentTarget.value)
+    setMinute(+evt.currentTarget.value * 60)
+  }
+  function onDragEnd () {}
   return (
     <>
       <GlobalStyle />
       <div>
-        <form>
-          <input type='number' onChange={onChange} />
-          <input type='number' value={hour} />
-        </form>
+        {/* <form> */}
+        <input type='number' value={minute} onChange={onMinuteChange} />
+        <input type='number' value={hour} onChange={onHourChange} />
+        {/* </form> */}
       </div>
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId='drop1'>
+          {() => {
+            return (
+              <ul>
+                <Draggable index={0} draggableId='first'>
+                  {() => {
+                    return <li>Hello</li>
+                  }}
+                </Draggable>
+                <Draggable index={1} draggableId='second'>
+                  {() => {
+                    return <li>Hello</li>
+                  }}
+                </Draggable>
+                <Draggable index={2} draggableId='third'>
+                  {() => {
+                    return <li>Hello</li>
+                  }}
+                </Draggable>
+              </ul>
+            )
+          }}
+        </Droppable>
+      </DragDropContext>
     </>
   )
 }
