@@ -55,22 +55,49 @@ function App () {
 
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='drop1'>
-          {() => {
+          {provided => {
             return (
-              <ul>
+              <ul ref={provided.innerRef} {...provided.droppableProps}>
                 <Draggable index={0} draggableId='first'>
-                  {() => {
-                    return <li>Hello</li>
+                  {provided => {
+                    return (
+                      <li
+                        style={{ backgroundColor: 'red' }}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                      >
+                        <span {...provided.dragHandleProps}>🅾️</span>
+                        Hello
+                      </li>
+                    )
                   }}
                 </Draggable>
                 <Draggable index={1} draggableId='second'>
-                  {() => {
-                    return <li>Hello</li>
+                  {provided => {
+                    return (
+                      <li
+                        style={{ backgroundColor: 'red' }}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                      >
+                        <span {...provided.dragHandleProps}>🅾️</span>
+                        Hello
+                      </li>
+                    )
                   }}
                 </Draggable>
                 <Draggable index={2} draggableId='third'>
-                  {() => {
-                    return <li>Hello</li>
+                  {provided => {
+                    return (
+                      <li
+                        style={{ backgroundColor: 'red' }}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                      >
+                        <span {...provided.dragHandleProps}> 🅾️</span>
+                        Hello
+                      </li>
+                    )
                   }}
                 </Draggable>
               </ul>
