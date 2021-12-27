@@ -55,54 +55,46 @@ function App () {
 
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='drop1'>
-          {provided => {
-            return (
-              <ul ref={provided.innerRef} {...provided.droppableProps}>
-                <Draggable index={0} draggableId='first'>
-                  {provided => {
-                    return (
-                      <li
-                        style={{ backgroundColor: 'red' }}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                      >
-                        <span {...provided.dragHandleProps}>🅾️</span>
-                        Hello
-                      </li>
-                    )
-                  }}
-                </Draggable>
-                <Draggable index={1} draggableId='second'>
-                  {provided => {
-                    return (
-                      <li
-                        style={{ backgroundColor: 'red' }}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                      >
-                        <span {...provided.dragHandleProps}>🅾️</span>
-                        Hello
-                      </li>
-                    )
-                  }}
-                </Draggable>
-                <Draggable index={2} draggableId='third'>
-                  {provided => {
-                    return (
-                      <li
-                        style={{ backgroundColor: 'red' }}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                      >
-                        <span {...provided.dragHandleProps}> 🅾️</span>
-                        Hello
-                      </li>
-                    )
-                  }}
-                </Draggable>
-              </ul>
-            )
-          }}
+          {provided => (
+            <ul
+              style={{ backgroundColor: 'red' }}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <Draggable index={0} draggableId='first'>
+                {provided => (
+                  <li ref={provided.innerRef} {...provided.draggableProps}>
+                    <span {...provided.dragHandleProps}>🅾️</span>
+                    Hello
+                  </li>
+                )}
+              </Draggable>
+              <Draggable index={3} draggableId='third'>
+                {provided => (
+                  <li
+                    style={{ backgroundColor: 'red' }}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                  >
+                    <span {...provided.dragHandleProps}>🅾️</span>
+                    Hello2222
+                  </li>
+                )}
+              </Draggable>
+              <Draggable index={1} draggableId='second'>
+                {provided => (
+                  <li
+                    style={{ backgroundColor: 'red' }}
+                    {...provided.draggableProps}
+                    ref={provided.innerRef}
+                  >
+                    <span {...provided.dragHandleProps}>🅾️</span>
+                    Hello123
+                  </li>
+                )}
+              </Draggable>
+            </ul>
+          )}
         </Droppable>
       </DragDropContext>
     </>
