@@ -1,5 +1,9 @@
 import { atom, selector } from 'recoil'
 
+export const AtomToDoList = atom({
+  key: 'toDoList',
+  default: ['a', 'b', 'c', 'd', 'e', 'f']
+})
 export const AtomMinute = atom({
   key: 'minute',
   default: 0

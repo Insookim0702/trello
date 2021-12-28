@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult
+} from 'react-beautiful-dnd'
 import { ThemeProvider } from 'styled-components'
 import { dark, light } from './theme'
 import {
   AtomHour,
   AtomMinute,
+  AtomToDoList,
   Hour2MinuteChange,
   Minute2HourChange
 } from './recoil'
@@ -60,6 +66,7 @@ const Item = styled.div`
 
 function App () {
   const isDark = true
+  const [toDoList, setToDoList] = useRecoilState(AtomToDoList)
   const [minute, setMinute] = useRecoilState(AtomMinute)
   const [hour, setHour] = useRecoilState(AtomHour)
   const minute2hour = useRecoilValue(Minute2HourChange)
@@ -72,8 +79,11 @@ function App () {
     setHour(+evt.currentTarget.value)
     setMinute(+evt.currentTarget.value * 60)
   }
-  function onDragEnd () {}
-  const toDos = ['a', 'b', 'c', 'd', 'e', 'f']
+  function onDragEnd ({ destination, source }: DropResult) {
+    console.log('destination', destination)
+    console.log('source', source)
+  }
+
   return (
     <>
       <ThemeProvider theme={light}>
@@ -90,7 +100,7 @@ function App () {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  {toDos.map((toDo, idx) => {
+                  {toDoList.map((toDo, idx) => {
                     return (
                       <Draggable
                         key={idx}
