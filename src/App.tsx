@@ -16,6 +16,7 @@ import {
   Hour2MinuteChange,
   Minute2HourChange
 } from './recoil'
+import Card from './Card'
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, 
 p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, 
@@ -57,13 +58,6 @@ const ListWrapper = styled.div`
   border-radius: 5px;
 `
 
-const Item = styled.div`
-  background-color: #f5f6fa;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-`
-
 function App () {
   const isDark = true
   const [toDoList, setToDoList] = useRecoilState(AtomToDoList)
@@ -80,8 +74,14 @@ function App () {
     setMinute(+evt.currentTarget.value * 60)
   }
   function onDragEnd ({ destination, source }: DropResult) {
-    console.log('destination', destination)
-    console.log('source', source)
+    setToDoList(oldList => {
+      const newList = [...oldList]
+      if (destination) {
+        const item1 = newList.splice(source.index, 1)
+        newList.splice(destination.index, 0, item1[0])
+      }
+      return newList
+    })
   }
 
   return (
@@ -101,23 +101,7 @@ function App () {
                   {...provided.droppableProps}
                 >
                   {toDoList.map((toDo, idx) => {
-                    return (
-                      <Draggable
-                        key={idx}
-                        index={idx}
-                        draggableId={`${toDo}${idx}`}
-                      >
-                        {provided => (
-                          <Item
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                          >
-                            <span {...provided.dragHandleProps}>🅾️</span>
-                            {toDo}
-                          </Item>
-                        )}
-                      </Draggable>
-                    )
+                    return <Card toDo={toDo} key={idx} idx={idx} />
                   })}
                   {provided.placeholder}
                 </ListWrapper>
