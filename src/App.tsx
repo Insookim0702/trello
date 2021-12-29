@@ -16,7 +16,8 @@ import {
   Hour2MinuteChange,
   Minute2HourChange
 } from './recoil'
-import Card from './Card'
+
+import List from './components/List'
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, 
 p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, 
@@ -48,14 +49,6 @@ const BodyWrapper = styled.div`
   justify-content: center;
   margin: 0 auto;
   height: 100vh;
-`
-
-const ListWrapper = styled.div`
-  background-color: #c7ecee;
-  width: 100%;
-  padding: 10px;
-  max-width: 480px;
-  border-radius: 5px;
 `
 
 function App () {
@@ -94,19 +87,7 @@ function App () {
             <input type='number' value={hour} onChange={onHourChange} />
           </div>
           <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId='drop1'>
-              {provided => (
-                <ListWrapper
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {toDoList.map((toDo, idx) => {
-                    return <Card toDo={toDo} key={idx} idx={idx} />
-                  })}
-                  {provided.placeholder}
-                </ListWrapper>
-              )}
-            </Droppable>
+            <List List={toDoList} />
           </DragDropContext>
         </BodyWrapper>
       </ThemeProvider>
