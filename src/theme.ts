@@ -5,6 +5,6 @@ export const dark: DefaultTheme = {
   txtColor: 'white'
 }
 export const light: DefaultTheme = {
-  bgColor: '#0984e3',
+  bgColor: '#74b9ff',
   txtColor: 'white'
 }

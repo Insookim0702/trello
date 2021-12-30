@@ -1,9 +1,24 @@
 import { atom, selector } from 'recoil'
 
-export const AtomToDoList = atom({
+export interface IList {
+  type: string
+  list: string[]
+}
+export const AtomToDoList = atom<IList>({
   key: 'toDoList',
-  default: ['a', 'b', 'c', 'd', 'e', 'f']
+  default: { type: 'ToDo', list: ['c', 'd', 'e', 'f'] }
 })
+
+export const AtomDoneList = atom<IList>({
+  key: 'doneList',
+  default: { type: 'Done', list: ['a', 'b'] }
+})
+
+export const AtomDoingList = atom<IList>({
+  key: 'doing',
+  default: { type: 'Doing', list: [] }
+})
+
 export const AtomMinute = atom({
   key: 'minute',
   default: 0

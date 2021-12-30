@@ -10,6 +10,8 @@ import {
 import { ThemeProvider } from 'styled-components'
 import { dark, light } from './theme'
 import {
+  AtomDoingList,
+  AtomDoneList,
   AtomHour,
   AtomMinute,
   AtomToDoList,
@@ -50,10 +52,20 @@ const BodyWrapper = styled.div`
   margin: 0 auto;
   height: 100vh;
 `
+const ListsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 40px;
+  /* background-color: red; */
+  width: 70%;
+`
 
 function App () {
   const isDark = true
   const [toDoList, setToDoList] = useRecoilState(AtomToDoList)
+  const [doneList, setDoneList] = useRecoilState(AtomDoneList)
+  const [doingList, setDoingList] = useRecoilState(AtomDoingList)
+  const Lists = [toDoList, doneList, doingList]
   const [minute, setMinute] = useRecoilState(AtomMinute)
   const [hour, setHour] = useRecoilState(AtomHour)
   const minute2hour = useRecoilValue(Minute2HourChange)
@@ -66,28 +78,22 @@ function App () {
     setHour(+evt.currentTarget.value)
     setMinute(+evt.currentTarget.value * 60)
   }
-  function onDragEnd ({ destination, source }: DropResult) {
-    setToDoList(oldList => {
-      const newList = [...oldList]
-      if (destination) {
-        const item1 = newList.splice(source.index, 1)
-        newList.splice(destination.index, 0, item1[0])
-      }
-      return newList
-    })
-  }
-
+  function onDragEnd () {}
   return (
     <>
       <ThemeProvider theme={light}>
         <GlobalStyle />
         <BodyWrapper>
-          <div>
+          {/* <div>
             <input type='number' value={minute} onChange={onMinuteChange} />
             <input type='number' value={hour} onChange={onHourChange} />
-          </div>
+          </div> */}
           <DragDropContext onDragEnd={onDragEnd}>
-            <List List={toDoList} />
+            <ListsWrapper>
+              {Lists.map((list, idx) => {
+                return <List key={idx} listInfo={list} />
+              })}
+            </ListsWrapper>
           </DragDropContext>
         </BodyWrapper>
       </ThemeProvider>
