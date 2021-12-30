@@ -36,23 +36,7 @@ function List ({ listInfo }: Props) {
   const setToDoList = useSetRecoilState(AtomToDoList)
   const setDoneList = useSetRecoilState(AtomDoneList)
   const setDoingList = useSetRecoilState(AtomDoingList)
-  function changeList (newList: string[]) {
-    if (listInfo.type === 'ToDo') {
-      setToDoList({ type: 'ToDo', list: newList })
-    } else if (listInfo.type === 'Doing') {
-      setDoingList({ type: 'Doing', list: newList })
-    } else {
-      setDoneList({ type: 'Done', list: newList })
-    }
-  }
-  function onDragEnd ({ destination, source }: DropResult) {
-    const newList = [...listInfo.list]
-    if (destination) {
-      const item1 = newList.splice(source.index, 1)
-      newList.splice(destination.index, 0, item1[0])
-    }
-    changeList(newList)
-  }
+
   return (
     <ListWrapper>
       <Title>{listInfo.type}</Title>

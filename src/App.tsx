@@ -78,7 +78,50 @@ function App () {
     setHour(+evt.currentTarget.value)
     setMinute(+evt.currentTarget.value * 60)
   }
-  function onDragEnd () {}
+  function sortList (type: string, newList: string[]) {
+    if (type === 'ToDo') {
+      setToDoList({ type: 'ToDo', list: newList })
+    } else if (type === 'Doing') {
+      setDoingList({ type: 'Doing', list: newList })
+    } else {
+      setDoneList({ type: 'Done', list: newList })
+    }
+  }
+
+  function getList (type: string) {
+    if (type === 'ToDo') {
+      return toDoList
+    } else if (type === 'Doing') {
+      return doingList
+    } else {
+      return doneList
+    }
+  }
+
+  function onDragEnd ({ destination, source }: DropResult) {
+    console.log('source', source)
+    console.log('destination', destination)
+    if (!destination) return
+    if (source.droppableId === destination?.droppableId) {
+      // 같은 리스트에서 카드 정렬
+      const newList = [...getList(source.droppableId).list]
+      if (destination) {
+        const item = newList.splice(source.index, 1)
+        newList.splice(destination.index, 0, item[0])
+      }
+      sortList(source.droppableId, newList)
+    } else {
+      // 다른 리스트로 카드 이동
+      const sourceList = [...getList(source.droppableId).list]
+      const destinationList = [...getList(destination.droppableId).list]
+      const sourceMoveItem = sourceList.splice(source.index, 1)
+      destinationList.splice(destination.index, 0, sourceMoveItem[0])
+      console.log('sourceList', sourceList)
+      console.log('destinationList', destinationList)
+      sortList(source.droppableId, sourceList)
+      sortList(destination.droppableId, destinationList)
+    }
+  }
   return (
     <>
       <ThemeProvider theme={light}>
