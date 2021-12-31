@@ -4,9 +4,8 @@ import {
   Droppable,
   DropResult
 } from 'react-beautiful-dnd'
-import { useSetRecoilState } from 'recoil'
 import styled from 'styled-components'
-import { AtomList, IList } from '../recoil'
+import { IList } from '../recoil'
 import Card from './Card'
 
 const ListWrapper = styled.div`
@@ -15,6 +14,8 @@ const ListWrapper = styled.div`
   padding: 10px;
   max-width: 280px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
 `
 
 interface Props {
@@ -32,18 +33,39 @@ const Title = styled.div`
     color: whitesmoke;
   }
 `
+
+interface IDropzoneProp {
+  isDraggingOver: boolean
+  draggingFromThisWith: boolean
+}
+const Dropzone = styled.div<IDropzoneProp>`
+  border-radius: 5px;
+  flex-grow: 1;
+  transition: background-color 0.5s;
+  background-color: ${props =>
+    props.isDraggingOver
+      ? '#a4fcbf'
+      : props.draggingFromThisWith
+      ? '#94b9fd'
+      : ''};
+`
 function List ({ listInfo }: Props) {
   return (
     <ListWrapper>
       <Title>{listInfo.type}</Title>
       <Droppable droppableId={`${listInfo.type}`}>
-        {provided => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+        {(provided, snapshot) => (
+          <Dropzone
+            isDraggingOver={snapshot.isDraggingOver}
+            draggingFromThisWith={Boolean(snapshot.draggingFromThisWith)}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
             {listInfo.list.map((toDo, idx) => {
               return <Card toDo={toDo} key={idx} idx={idx} />
             })}
             {provided.placeholder}
-          </div>
+          </Dropzone>
         )}
       </Droppable>
     </ListWrapper>
