@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import {
   DragDropContext,
   Draggable,
@@ -10,16 +10,14 @@ import {
 import { ThemeProvider } from 'styled-components'
 import { dark, light } from './theme'
 import {
-  AtomDoingList,
-  AtomDoneList,
   AtomHour,
   AtomMinute,
-  AtomToDoList,
+  AtomList,
   Hour2MinuteChange,
   Minute2HourChange
 } from './recoil'
-
 import List from './components/List'
+
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, 
 p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, 
@@ -56,16 +54,12 @@ const ListsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 40px;
-  /* background-color: red; */
   width: 70%;
 `
 
 function App () {
   const isDark = true
-  const [toDoList, setToDoList] = useRecoilState(AtomToDoList)
-  const [doneList, setDoneList] = useRecoilState(AtomDoneList)
-  const [doingList, setDoingList] = useRecoilState(AtomDoingList)
-  const Lists = [toDoList, doneList, doingList]
+  const [Lists, setLists] = useRecoilState(AtomList)
   const [minute, setMinute] = useRecoilState(AtomMinute)
   const [hour, setHour] = useRecoilState(AtomHour)
   const minute2hour = useRecoilValue(Minute2HourChange)
@@ -78,48 +72,58 @@ function App () {
     setHour(+evt.currentTarget.value)
     setMinute(+evt.currentTarget.value * 60)
   }
-  function sortList (type: string, newList: string[]) {
-    if (type === 'ToDo') {
-      setToDoList({ type: 'ToDo', list: newList })
-    } else if (type === 'Doing') {
-      setDoingList({ type: 'Doing', list: newList })
-    } else {
-      setDoneList({ type: 'Done', list: newList })
-    }
-  }
-
   function getList (type: string) {
-    if (type === 'ToDo') {
-      return toDoList
-    } else if (type === 'Doing') {
-      return doingList
-    } else {
-      return doneList
-    }
+    return Lists.find(list => list.type === type) || { list: [] }
   }
-
   function onDragEnd ({ destination, source }: DropResult) {
-    console.log('source', source)
-    console.log('destination', destination)
-    if (!destination) return
+    if (!destination || !source.droppableId) return
     if (source.droppableId === destination?.droppableId) {
       // 같은 리스트에서 카드 정렬
-      const newList = [...getList(source.droppableId).list]
-      if (destination) {
-        const item = newList.splice(source.index, 1)
-        newList.splice(destination.index, 0, item[0])
-      }
-      sortList(source.droppableId, newList)
+      if (!getList(source.droppableId)) return
+      const editList = [...getList(source.droppableId).list]
+      const item = editList.splice(source.index, 1)
+      editList.splice(destination.index, 0, item[0])
+      const targetIndex = Lists.findIndex(
+        list => list.type === source.droppableId
+      )
+      setLists(oldList => {
+        const newList = [...oldList]
+        newList.splice(targetIndex, 1, {
+          type: source.droppableId,
+          list: editList
+        })
+        return newList
+      })
     } else {
       // 다른 리스트로 카드 이동
       const sourceList = [...getList(source.droppableId).list]
       const destinationList = [...getList(destination.droppableId).list]
       const sourceMoveItem = sourceList.splice(source.index, 1)
       destinationList.splice(destination.index, 0, sourceMoveItem[0])
-      console.log('sourceList', sourceList)
-      console.log('destinationList', destinationList)
-      sortList(source.droppableId, sourceList)
-      sortList(destination.droppableId, destinationList)
+      // sortList(source.droppableId, sourceList)
+      // sortList(destination.droppableId, destinationList)
+      const sourceIndex = Lists.findIndex(
+        list => list.type === source.droppableId
+      )
+      const destinationIndex = Lists.findIndex(
+        list => list.type === destination.droppableId
+      )
+      setLists(oldList => {
+        const newList = [...oldList]
+        newList.splice(sourceIndex, 1, {
+          type: source.droppableId,
+          list: sourceList
+        })
+        return newList
+      })
+      setLists(oldList => {
+        const newList = [...oldList]
+        newList.splice(destinationIndex, 1, {
+          type: destination.droppableId,
+          list: destinationList
+        })
+        return newList
+      })
     }
   }
   return (

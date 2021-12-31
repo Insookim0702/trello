@@ -6,7 +6,7 @@ import {
 } from 'react-beautiful-dnd'
 import { useSetRecoilState } from 'recoil'
 import styled from 'styled-components'
-import { AtomDoingList, AtomDoneList, AtomToDoList, IList } from '../recoil'
+import { AtomList, IList } from '../recoil'
 import Card from './Card'
 
 const ListWrapper = styled.div`
@@ -33,10 +33,6 @@ const Title = styled.div`
   }
 `
 function List ({ listInfo }: Props) {
-  const setToDoList = useSetRecoilState(AtomToDoList)
-  const setDoneList = useSetRecoilState(AtomDoneList)
-  const setDoingList = useSetRecoilState(AtomDoingList)
-
   return (
     <ListWrapper>
       <Title>{listInfo.type}</Title>
