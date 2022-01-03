@@ -7,7 +7,7 @@ import {
 import styled from 'styled-components'
 import { IList } from '../recoil'
 import Card from './Card'
-
+import { useForm } from 'react-hook-form'
 const ListWrapper = styled.div`
   background-color: #dfe6e9;
   width: 100%;
@@ -49,6 +49,21 @@ const Dropzone = styled.div<IDropzoneProp>`
       ? '#94b9fd'
       : ''};
 `
+
+function Input () {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm()
+  function onSubmit () {}
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input type='text' {...register('')} />
+      {errors ? <span></span> : null}
+    </form>
+  )
+}
 function List ({ listInfo }: Props) {
   return (
     <ListWrapper>

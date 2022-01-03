@@ -7,9 +7,9 @@ export interface IList {
 export const AtomList = atom<IList[]>({
   key: 'List',
   default: [
-    { type: 'ToDo', list: ['c', 'd', 'e', 'f'] },
-    { type: 'Done', list: ['a', 'b'] },
-    { type: 'Doing', list: [] }
+    { type: 'ToDo', list: ['밥 먹기', '물 먹기', '집 가기', '책 읽기'] },
+    { type: 'Doing', list: [] },
+    { type: 'Done', list: ['글쓰기', '영화보기'] }
   ]
 })
 
