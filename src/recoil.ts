@@ -2,14 +2,33 @@ import { atom, selector } from 'recoil'
 
 export interface IList {
   type: string
-  list: string[]
+  list: IListItem[]
+}
+
+export interface IListItem {
+  id: string
+  text: string
 }
 export const AtomList = atom<IList[]>({
   key: 'List',
   default: [
-    { type: 'ToDo', list: ['밥 먹기', '물 먹기', '집 가기', '책 읽기'] },
+    {
+      type: 'ToDo',
+      list: [
+        { id: '0', text: '밥 먹기' },
+        { id: '1', text: '책 읽기' },
+        { id: '2', text: '집 가기' },
+        { id: '3', text: '물 먹기' }
+      ]
+    },
     { type: 'Doing', list: [] },
-    { type: 'Done', list: ['글쓰기', '영화보기'] }
+    {
+      type: 'Done',
+      list: [
+        { id: '4', text: '글쓰기' },
+        { id: '5', text: '영화보기' }
+      ]
+    }
   ]
 })
 

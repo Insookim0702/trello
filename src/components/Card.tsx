@@ -10,17 +10,18 @@ const Item = styled.div`
 `
 
 type Props = {
-  toDo: string
+  toDoId: string
+  toDoText: string
   idx: number
 }
 
-function Card ({ toDo, idx }: Props) {
+function Card ({ toDoId, toDoText, idx }: Props) {
   return (
-    <Draggable index={idx} draggableId={`${toDo}${idx}`}>
+    <Draggable index={idx} draggableId={`${toDoText}${toDoId}`}>
       {provided => (
         <Item ref={provided.innerRef} {...provided.draggableProps}>
           <span {...provided.dragHandleProps}>🅾️</span>
-          {toDo}
+          {toDoText}
         </Item>
       )}
     </Draggable>

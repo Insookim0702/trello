@@ -1,13 +1,9 @@
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult
-} from 'react-beautiful-dnd'
+import { Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
-import { IList } from '../recoil'
+import { AtomList, IList } from '../recoil'
 import Card from './Card'
 import { useForm } from 'react-hook-form'
+import { useRecoilState } from 'recoil'
 const ListWrapper = styled.div`
   background-color: #dfe6e9;
   width: 100%;
@@ -50,24 +46,66 @@ const Dropzone = styled.div<IDropzoneProp>`
       : ''};
 `
 
-function Input () {
+const Input = styled.input`
+  width: 100%;
+  box-sizing: border-box;
+`
+interface IForm {
+  task: string
+}
+const Form = styled.form`
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+`
+
+const ListWrap = styled.div`
+  max-height: 80vh;
+  overflow-y: scroll;
+`
+const ErrMsg = styled.p`
+  color: hotpink;
+`
+function InputForm ({ type }: { type: string }) {
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm()
-  function onSubmit () {}
+
+  const [list, setList] = useRecoilState(AtomList)
+  function onSubmit ({ task }: IForm) {
+    const newItem = {
+      id: new Date() + '',
+      text: task
+    }
+    setList(oldList => {
+      const idx = oldList.findIndex(item => item.type === type)
+      const newList = [...oldList]
+      const addList = JSON.parse(JSON.stringify(oldList[idx]))
+      addList.list.push(newItem)
+      newList.splice(idx, 1, addList)
+      return newList
+    })
+    setValue('task', '')
+  }
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input type='text' {...register('')} />
-      {errors ? <span></span> : null}
-    </form>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Input
+        type='text'
+        {...register('task', { required: 'input your task.' })}
+      />
+      {errors.task ? <ErrMsg>{errors.task.message}</ErrMsg> : null}
+    </Form>
   )
 }
 function List ({ listInfo }: Props) {
   return (
     <ListWrapper>
       <Title>{listInfo.type}</Title>
+      <InputForm type={listInfo.type} />
       <Droppable droppableId={`${listInfo.type}`}>
         {(provided, snapshot) => (
           <Dropzone
@@ -76,10 +114,19 @@ function List ({ listInfo }: Props) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {listInfo.list.map((toDo, idx) => {
-              return <Card toDo={toDo} key={idx} idx={idx} />
-            })}
-            {provided.placeholder}
+            <ListWrap>
+              {listInfo.list.map((task, idx) => {
+                return (
+                  <Card
+                    toDoId={task.id}
+                    toDoText={task.text}
+                    key={idx}
+                    idx={idx}
+                  />
+                )
+              })}
+              {provided.placeholder}
+            </ListWrap>
           </Dropzone>
         )}
       </Droppable>
